@@ -4,12 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestsGenerator
+namespace Generator
 {
-    class Program
+    public class TestsGenerator
     {
-        static void Main(string[] args)
-        {
-        }
     }
 }
