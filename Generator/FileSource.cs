@@ -11,7 +11,7 @@ namespace ConsoleApp
         public byte[] Data { get; set; }
         public string FileName { get; set; }
 
-        public FileSource(int length, string name)
+        public FileSource(long length, string name)
         {
             Data = new byte[length];
             FileName = name;

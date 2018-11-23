@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2047
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "TestsGenerator\ConsoleApp.csproj", "{CE09796A-3277-4A6A-A8B5-1A435A44BA55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestGenerator", "Generator\TestGenerator.csproj", "{2ABE8CE9-2576-4942-97CC-98851601AD3F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestsGenerator", "Generator\TestsGenerator.csproj", "{2ABE8CE9-2576-4942-97CC-98851601AD3F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

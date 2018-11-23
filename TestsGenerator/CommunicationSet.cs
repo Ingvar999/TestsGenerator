@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace Generator
+namespace ConsoleApp
 {
     public class CommunicationSet<T>
     {
@@ -12,9 +12,9 @@ namespace Generator
         public ConcurrentQueue<T> Queue { get; set; }
         public bool IsWorking { get; set; }
 
-        public CommunicationSet(int membersCount, int maxValue)
+        public CommunicationSet(int maxValue)
         {
-            Sem = new Semaphore(membersCount, maxValue);
+            Sem = new Semaphore(maxValue, maxValue);
             Queue = new ConcurrentQueue<T>();
             IsWorking = false;
         }
