@@ -8,7 +8,7 @@ namespace ConsoleApp
 {
     class WriteLayer
     {
-        private const int timeout = 2000;
+        private const int timeout = 1000;
         private int maxCount;
         private string outputFolder;
         private CommunicationSet<FileSource> inputSet;
@@ -24,7 +24,7 @@ namespace ConsoleApp
         {
             for (int i = 0; i < maxCount; ++i)
             {
-                if (!inputSet.Sem.WaitOne(timeout))
+                if (inputSet.Sem.WaitOne(timeout))
                 {
                     FileSource source;
                     inputSet.Queue.TryDequeue(out source);
@@ -43,8 +43,9 @@ namespace ConsoleApp
         {
             var context = (Context<WriteLayer>)result.AsyncState;
             context.Stream.EndWrite(result);
+            context.Stream.Close();
 
-            if (!context.Obj.inputSet.Sem.WaitOne(timeout))
+            if (context.Obj.inputSet.Sem.WaitOne(timeout))
             {
                 FileSource source;
                 context.Obj.inputSet.Queue.TryDequeue(out source);

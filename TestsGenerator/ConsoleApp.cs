@@ -17,14 +17,15 @@ namespace ConsoleApp
             int maxProcessesTasksCount = 3;
 
             var files = new ConcurrentQueue<string>(Directory.GetFiles(inputPath, "*.cs"));
-            var readGenerateSet = new CommunicationSet<FileSource>(maxReadTasksCount + maxProcessesTasksCount);
-            var writeGenerateSet = new CommunicationSet<FileSource>(maxWriteTasksCount + maxProcessesTasksCount);
+            var readGenerateSet = new CommunicationSet<FileSource>(10);
+            var writeGenerateSet = new CommunicationSet<FileSource>(10);
             ReadLayer reader = new ReadLayer(maxReadTasksCount, files, readGenerateSet);
             GenerateLayer generate = new GenerateLayer(maxProcessesTasksCount, readGenerateSet, writeGenerateSet);
             WriteLayer writer = new WriteLayer(maxWriteTasksCount, writeGenerateSet, outputPath);
             reader.Start();
             generate.Start();
             writer.Start();
+            Console.ReadKey();
         }
     }
 }

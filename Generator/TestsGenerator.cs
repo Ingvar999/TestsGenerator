@@ -17,6 +17,9 @@ namespace Generator
         private List<FileSource> GenerateTests(object state)
         {
             List<FileSource> result = new List<FileSource>();
+            FileSource file = (FileSource)state;
+            file.FileName = file.FileName.Substring(file.FileName.LastIndexOf('\\') + 1);
+            result.Add(file);
             return result;
         }
     }

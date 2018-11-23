@@ -10,13 +10,11 @@ namespace ConsoleApp
     {
         public Semaphore Sem { get; set; }
         public ConcurrentQueue<T> Queue { get; set; }
-        public bool IsWorking { get; set; }
 
         public CommunicationSet(int maxValue)
         {
-            Sem = new Semaphore(maxValue, maxValue);
+            Sem = new Semaphore(0, maxValue);
             Queue = new ConcurrentQueue<T>();
-            IsWorking = false;
         }
     }
 }

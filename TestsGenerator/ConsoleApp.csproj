@@ -45,13 +45,19 @@
     <Compile Include="CommunicationSet.cs" />
     <Compile Include="ConsoleApp.cs" />
     <Compile Include="Context.cs" />
-    <Compile Include="FileSource.cs" />
     <Compile Include="GenerateLayer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReadLayer.cs" />
+    <Compile Include="WriteLayer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Generator\TestsGenerator.csproj">
+      <Project>{2abe8ce9-2576-4942-97cc-98851601ad3f}</Project>
+      <Name>TestsGenerator</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

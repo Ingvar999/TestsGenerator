@@ -10,23 +10,21 @@ namespace ConsoleApp
 {
     class GenerateLayer
     {
-        private const int timeout = 2000;
+        private const int timeout = 1000;
         private int maxCount;
-        private ConcurrentQueue<string> files;
         private CommunicationSet<FileSource> outputSet;
         private CommunicationSet<FileSource> inputSet;
         private TestsGenerator generator;
 
-        public GenerateLayer(int maxThreadsCount, ConcurrentQueue<string> sourceList, CommunicationSet<FileSource> inputSet, CommunicationSet<FileSource> outputSet)
+        public GenerateLayer(int maxThreadsCount, CommunicationSet<FileSource> inputSet, CommunicationSet<FileSource> outputSet)
         {
             maxCount = maxThreadsCount;
-            files = sourceList;
             this.outputSet = outputSet;
             this.inputSet = inputSet;
             generator = new TestsGenerator();
         }
 
-        public void Start()
+        public async void Start()
         {
             for (int i = 0; i < maxCount; ++i)
             {
@@ -34,7 +32,9 @@ namespace ConsoleApp
                 {
                     FileSource source;
                     inputSet.Queue.TryDequeue(out source);
-                    generator.GetGenerator(source).ContinueWith(GenerateCompletion, this).Start();
+                    var t = generator.GetGenerator(source);
+                    t.Start();
+                    await t.ContinueWith(GenerateCompletion, this);
                 }
                 else
                 {
@@ -43,7 +43,7 @@ namespace ConsoleApp
             }
         }
 
-        static void GenerateCompletion(Task<List<FileSource>> t, object obj)
+        static async void GenerateCompletion(Task<List<FileSource>> t, object obj)
         {
             GenerateLayer that = (GenerateLayer)obj;
             foreach (FileSource item in t.Result)
@@ -55,7 +55,9 @@ namespace ConsoleApp
             {
                 FileSource source;
                 that.inputSet.Queue.TryDequeue(out source);
-                that.generator.GetGenerator(source).ContinueWith(GenerateCompletion, that).Start();
+                var task = that.generator.GetGenerator(source);
+                task.Start();
+                await task.ContinueWith(GenerateCompletion, that);
             }
         }
     }
