@@ -58,7 +58,6 @@ namespace Generator
             foreach (MethodDeclarationSyntax methodDeclaration in methodDeclarations)
             {
                 string methodName = methodDeclaration.Identifier.ValueText;         
-
                 methods.Add(new MethodInfo(methodName));
             }
 

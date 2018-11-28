@@ -15,10 +15,9 @@ namespace TestsGeneratorTest
     {
         private CompilationUnitSyntax compilationUnitSyntax;
 
-        [TestInitialize]
-        public void SetUp()
+        public void SetUp(string name)
         {
-            FileSource file = new FileSource(File.ReadAllBytes(Path.GetFullPath(@"..\..\..\Input\SimpleClass.cs")), "");
+            FileSource file = new FileSource(File.ReadAllBytes($"{name}.cs.testable"), "");
             var generator = new TestsGenerator();
             var t = generator.GetGenerator(file);
             t.Wait();
@@ -29,6 +28,7 @@ namespace TestsGeneratorTest
         [TestMethod]
         public void UnitUsingDirectiveTest()
         {
+            SetUp("SimpleClass");
             IEnumerable<UsingDirectiveSyntax> NUnitUsingDirective =
                 from usingDirective in compilationUnitSyntax.DescendantNodes().OfType<UsingDirectiveSyntax>()
                 where usingDirective.Name.ToString() == "Microsoft.VisualStudio.TestTools.UnitTesting"
@@ -40,6 +40,7 @@ namespace TestsGeneratorTest
         [TestMethod]
         public void UnitUsingDirectiveTest2()
         {
+            SetUp("SimpleClass");
             IEnumerable<UsingDirectiveSyntax> NUnitUsingDirective =
                 from usingDirective in compilationUnitSyntax.DescendantNodes().OfType<UsingDirectiveSyntax>()
                 where usingDirective.Name.ToString() == "ConsoleApp"
@@ -51,6 +52,7 @@ namespace TestsGeneratorTest
         [TestMethod]
         public void SomeClassNamespaceTest()
         {
+            SetUp("SimpleClass");
             IEnumerable<NamespaceDeclarationSyntax> Namespace =
                 from namespaceDeclaration in compilationUnitSyntax.DescendantNodes().OfType<NamespaceDeclarationSyntax>()
                 where namespaceDeclaration.Name.ToString() == "ConsoleApp.Tests"
@@ -60,8 +62,9 @@ namespace TestsGeneratorTest
         }
 
         [TestMethod]
-        public void TSomeClassMethodsCountTest()
+        public void ClassMethodsCountTest()
         {
+            SetUp("SimpleClass");
             IEnumerable<MethodDeclarationSyntax> methods =
                 from methodDeclaration in compilationUnitSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>()
                 select methodDeclaration;
@@ -70,8 +73,9 @@ namespace TestsGeneratorTest
         }
 
         [TestMethod]
-        public void SomeClassNameTest()
+        public void ClassNameTest()
         {
+            SetUp("SimpleClass");
             IEnumerable<ClassDeclarationSyntax> className =
                 from classDeclaration in compilationUnitSyntax.DescendantNodes().OfType<ClassDeclarationSyntax>()
                 where classDeclaration.Identifier.ValueText == "SimpleClassTests"
@@ -82,8 +86,9 @@ namespace TestsGeneratorTest
 
 
         [TestMethod]
-        public void SecondMethodAssertFailTest()
+        public void MethodAssertFailTest()
         {
+            SetUp("SimpleClass");
             IEnumerable<MethodDeclarationSyntax> method =
                 from methodDeclaration in compilationUnitSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>()
                 where methodDeclaration.Identifier.ValueText == "PublicMethodTest"
@@ -95,6 +100,18 @@ namespace TestsGeneratorTest
                 select assertDeclaration;
 
             Assert.IsNotNull(asserts.FirstOrDefault());
+        }
+
+        [TestMethod]
+        public void ClassesCountTest()
+        {
+            SetUp("EmptyClass");
+            IEnumerable<ClassDeclarationSyntax> classes =
+                from classDeclaration in compilationUnitSyntax.DescendantNodes().OfType<ClassDeclarationSyntax>()
+                where classDeclaration.Identifier.ValueText == "EmptyClassTests"
+                select classDeclaration;
+
+            Assert.IsNotNull(classes.FirstOrDefault());
         }
     }
 }

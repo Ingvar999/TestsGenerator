@@ -153,8 +153,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="EmptyClass.cs.testable" />
     <Compile Include="GeneratorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="SimpleClass.cs.testable" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
