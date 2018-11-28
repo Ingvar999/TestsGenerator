@@ -4,23 +4,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ConsoleApp;
+using TestsGeneratorLibrary.Structures;
+using TestsGeneratorLibrary;
 
 namespace Generator
 {
     public class TestsGenerator
     {
-        public Task<List<FileSource>> GetGenerator(FileSource source)
+        public Task<IEnumerable<FileSource>> GetGenerator(FileSource source)
         {
-            return new Task<List<FileSource>>(GenerateTests, source);
-        }
+            return Task<IEnumerable<FileSource>>.Factory.StartNew(delegate {
+                SyntaxTreeInfoBuilder syntaxTreeInfoBuilder = new SyntaxTreeInfoBuilder(Encoding.Default.GetString(source.Data));
+                SyntaxTreeInfo syntaxTreeInfo = syntaxTreeInfoBuilder.GetSyntaxTreeInfo();
 
-        private List<FileSource> GenerateTests(object state)
-        {
-            List<FileSource> result = new List<FileSource>();
-            FileSource file = (FileSource)state;
-            file.FileName = file.FileName.Substring(file.FileName.LastIndexOf('\\') + 1);
-            result.Add(file);
-            return result;
+                TestClassTemplateGenerator testTemplatesGenerator = new TestClassTemplateGenerator(syntaxTreeInfo);
+                IEnumerable<FileSource> result = testTemplatesGenerator.GetTestTemplates()
+                    .Select(template => new FileSource(Encoding.Default.GetBytes(template.TestClassData), template.TestClassName));
+                return result;
+            });
         }
     }
 }

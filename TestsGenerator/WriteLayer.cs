@@ -8,7 +8,7 @@ namespace ConsoleApp
 {
     class WriteLayer
     {
-        private const int timeout = 1000;
+        private const int timeout = 500;
         private int maxCount;
         private string outputFolder;
         private CommunicationSet<FileSource> inputSet;
@@ -24,34 +24,20 @@ namespace ConsoleApp
         {
             for (int i = 0; i < maxCount; ++i)
             {
-                if (inputSet.Sem.WaitOne(timeout))
-                {
-                    FileSource source;
-                    inputSet.Queue.TryDequeue(out source);
-                    FileStream stream = new FileStream(outputFolder + source.FileName, FileMode.OpenOrCreate);
-                    var context = new Context<WriteLayer>(this, source, stream);
-                    stream.BeginWrite(source.Data, 0, source.Data.Length, WriteCompletion, context);
-                }
-                else
-                {
-                    break;
-                }
+                StartTrhreadAsync();
             }
         }
 
-        private static void WriteCompletion(IAsyncResult result)
+        public async void StartTrhreadAsync()
         {
-            var context = (Context<WriteLayer>)result.AsyncState;
-            context.Stream.EndWrite(result);
-            context.Stream.Close();
-
-            if (context.Obj.inputSet.Sem.WaitOne(timeout))
+            FileStream stream;
+            FileSource file;
+            while (inputSet.Sem.WaitOne(timeout))
             {
-                FileSource source;
-                context.Obj.inputSet.Queue.TryDequeue(out source);
-                FileStream stream = new FileStream(context.Obj.outputFolder + source.FileName, FileMode.OpenOrCreate);
-                var newContext = new Context<WriteLayer>(context.Obj, source, stream);
-                stream.BeginWrite(source.Data, 0, source.Data.Length, WriteCompletion, newContext);
+                inputSet.Queue.TryDequeue(out file);
+                stream = new FileStream(file.FileName, FileMode.OpenOrCreate);
+                await stream.WriteAsync(file.Data, 0, file.Data.Length);
+                Console.WriteLine("Wrote " + file.FileName);
             }
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    public class Context<T>
+    public class Context2<T>
     {
         public T Obj { get; set; }
         public FileSource Item { get; set; }

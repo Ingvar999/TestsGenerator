@@ -10,7 +10,7 @@ namespace ConsoleApp
 {
     class GenerateLayer
     {
-        private const int timeout = 1000;
+        private const int timeout = 500;
         private int maxCount;
         private CommunicationSet<FileSource> outputSet;
         private CommunicationSet<FileSource> inputSet;
@@ -24,40 +24,28 @@ namespace ConsoleApp
             generator = new TestsGenerator();
         }
 
-        public async void Start()
+        public void Start()
         {
             for (int i = 0; i < maxCount; ++i)
             {
-                if (inputSet.Sem.WaitOne(timeout))
-                {
-                    FileSource source;
-                    inputSet.Queue.TryDequeue(out source);
-                    var t = generator.GetGenerator(source);
-                    t.Start();
-                    await t.ContinueWith(GenerateCompletion, this);
-                }
-                else
-                {
-                    break;
-                }
+                StartTrhreadAsync();
             }
         }
 
-        static async void GenerateCompletion(Task<List<FileSource>> t, object obj)
+        public async void StartTrhreadAsync()
         {
-            GenerateLayer that = (GenerateLayer)obj;
-            foreach (FileSource item in t.Result)
-            {
-                that.outputSet.Queue.Enqueue(item);
-                that.outputSet.Sem.Release();
-            }
-            if (that.inputSet.Sem.WaitOne(timeout))
+            IEnumerable<FileSource> tests;
+            while (inputSet.Sem.WaitOne(timeout))
             {
                 FileSource source;
-                that.inputSet.Queue.TryDequeue(out source);
-                var task = that.generator.GetGenerator(source);
-                task.Start();
-                await task.ContinueWith(GenerateCompletion, that);
+                inputSet.Queue.TryDequeue(out source);
+                tests = await generator.GetGenerator(source);
+                foreach (FileSource item in tests)
+                {
+                    outputSet.Queue.Enqueue(item);
+                    outputSet.Sem.Release();
+                    Console.WriteLine("Generated " + item.FileName);
+                }
             }
         }
     }

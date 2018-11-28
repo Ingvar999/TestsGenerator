@@ -21,37 +21,25 @@ namespace ConsoleApp
 
         public void Start()
         {
-            string fileName;
             for (int i = 0; i < maxCount; ++i)
             {
-                if (files.TryDequeue(out fileName))
-                {
-                    FileStream stream = new FileStream(fileName, FileMode.Open);
-                    var context = new Context<ReadLayer>(this, new FileSource(stream.Length, fileName), stream);
-                    stream.BeginRead(context.Item.Data, 0, context.Item.Data.Length, ReadCompletion, context);
-                }
-                else
-                {
-                    break;
-                }
+                StartTrhreadAsync();
             }
         }
 
-        private static void ReadCompletion(IAsyncResult result)
+        public async void StartTrhreadAsync()
         {
-            var context = (Context<ReadLayer>)result.AsyncState;
-
-            context.Stream.EndRead(result);
-            context.Stream.Close();
-            context.Obj.outputSet.Queue.Enqueue(context.Item);
-            context.Obj.outputSet.Sem.Release();
-
             string fileName;
-            if (context.Obj.files.TryDequeue(out fileName))
+            FileStream stream;
+            FileSource file;
+            while (files.TryDequeue(out fileName))
             {
-                FileStream stream = new FileStream(fileName, FileMode.Open);
-                var newContext = new Context<ReadLayer>(context.Obj, new FileSource(stream.Length, fileName), stream);
-                stream.BeginRead(context.Item.Data, 0, context.Item.Data.Length, ReadCompletion, newContext);
+                stream = new FileStream(fileName, FileMode.Open);
+                file = new FileSource(stream.Length, fileName);
+                await stream.ReadAsync(file.Data, 0, file.Data.Length);
+                Console.WriteLine("Read " + fileName);
+                outputSet.Queue.Enqueue(file);
+                outputSet.Sem.Release();
             }
         }
     }
