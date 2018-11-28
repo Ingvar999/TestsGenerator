@@ -19,7 +19,7 @@ namespace ConsoleApp
             Stream = stream;
         }
 		
-		public int A(){
+		public int Method1(){
 			return 1;
 		}
     }

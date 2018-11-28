@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ConsoleApp;
-using TestsGeneratorLibrary.Structures;
-using TestsGeneratorLibrary;
 
 namespace Generator
 {
@@ -18,9 +15,7 @@ namespace Generator
                 SyntaxTreeInfo syntaxTreeInfo = syntaxTreeInfoBuilder.GetSyntaxTreeInfo();
 
                 TestClassTemplateGenerator testTemplatesGenerator = new TestClassTemplateGenerator(syntaxTreeInfo);
-                IEnumerable<FileSource> result = testTemplatesGenerator.GetTestTemplates()
-                    .Select(template => new FileSource(Encoding.Default.GetBytes(template.TestClassData), template.TestClassName));
-                return result;
+                return testTemplatesGenerator.GetTestTemplates();
             });
         }
     }

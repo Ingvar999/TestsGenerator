@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Generator;
 
 namespace ConsoleApp
 {
@@ -10,8 +11,8 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
-            string inputPath = @"D:\git\СПП\TestsGenerator\Input\";
-            string outputPath = @"D:\git\СПП\TestsGenerator\Output\";
+            string inputPath = Path.GetFullPath(@"..\..\..\Input\");
+            string outputPath = Path.GetFullPath(@"..\..\..\Output\");
             int maxReadTasksCount = 3;
             int maxWriteTasksCount = 3;
             int maxProcessesTasksCount = 3;
@@ -22,6 +23,7 @@ namespace ConsoleApp
             ReadLayer reader = new ReadLayer(maxReadTasksCount, files, readGenerateSet);
             GenerateLayer generate = new GenerateLayer(maxProcessesTasksCount, readGenerateSet, writeGenerateSet);
             WriteLayer writer = new WriteLayer(maxWriteTasksCount, writeGenerateSet, outputPath);
+
             reader.Start();
             generate.Start();
             writer.Start();

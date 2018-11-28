@@ -1,12 +1,11 @@
-﻿using System;
+﻿using System.Text;
 using System.Collections.Generic;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using TestsGeneratorLibrary.Structures;
 
-namespace TestsGeneratorLibrary
+namespace Generator
 {
     internal class TestClassTemplateGenerator
     {
@@ -17,9 +16,9 @@ namespace TestsGeneratorLibrary
             _syntaxTreeInfo = syntaxTreeInfo;
         }
 
-        public IEnumerable<GeneratedTestClass> GetTestTemplates()
+        public IEnumerable<FileSource> GetTestTemplates()
         {
-            List<GeneratedTestClass> testTemplates = new List<GeneratedTestClass>();
+            List<FileSource> testTemplates = new List<FileSource>();
 
             foreach (ClassInfo classInfo in _syntaxTreeInfo.Classes)
             {
@@ -40,9 +39,9 @@ namespace TestsGeneratorLibrary
                             .WithMembers(GetClassMembers(classInfo))))));
 
                 string fileName = $"{classInfo.Name}Tests.cs";
-                string fileData = compilationUnit.NormalizeWhitespace().ToFullString();
+                byte[] fileData = Encoding.Default.GetBytes(compilationUnit.NormalizeWhitespace().ToFullString());
 
-                testTemplates.Add(new GeneratedTestClass(fileName, fileData));
+                testTemplates.Add(new FileSource(fileData, fileName));
             }
 
             return testTemplates;

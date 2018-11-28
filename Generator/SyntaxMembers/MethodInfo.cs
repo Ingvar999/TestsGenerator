@@ -4,8 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TestsGeneratorLibrary.Structures
-{
+namespace Generator
+{ 
     public class MethodInfo
     {
         public string Name { get; }

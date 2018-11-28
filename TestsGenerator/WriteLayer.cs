@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Generator;
 
 namespace ConsoleApp
 {
@@ -35,9 +36,9 @@ namespace ConsoleApp
             while (inputSet.Sem.WaitOne(timeout))
             {
                 inputSet.Queue.TryDequeue(out file);
-                stream = new FileStream(file.FileName, FileMode.OpenOrCreate);
+                stream = new FileStream(outputFolder + file.FileName, FileMode.OpenOrCreate);
                 await stream.WriteAsync(file.Data, 0, file.Data.Length);
-                Console.WriteLine("Wrote " + file.FileName);
+                Console.WriteLine("Wrote " + stream.Name);
             }
         }
     }

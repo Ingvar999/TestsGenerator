@@ -5,7 +5,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
-namespace TestsGeneratorLibrary.Structures
+namespace Generator
 {
     public class SyntaxTreeInfoBuilder
     {
