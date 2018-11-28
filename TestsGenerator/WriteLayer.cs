@@ -38,6 +38,7 @@ namespace ConsoleApp
                 inputSet.Queue.TryDequeue(out file);
                 stream = new FileStream(outputFolder + file.FileName, FileMode.OpenOrCreate);
                 await stream.WriteAsync(file.Data, 0, file.Data.Length);
+                stream.Close();
                 Console.WriteLine("Wrote " + stream.Name);
             }
         }

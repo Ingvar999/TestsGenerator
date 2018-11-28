@@ -38,11 +38,22 @@ namespace TestsGeneratorTest
         }
 
         [TestMethod]
+        public void UnitUsingDirectiveTest2()
+        {
+            IEnumerable<UsingDirectiveSyntax> NUnitUsingDirective =
+                from usingDirective in compilationUnitSyntax.DescendantNodes().OfType<UsingDirectiveSyntax>()
+                where usingDirective.Name.ToString() == "ConsoleApp"
+                select usingDirective;
+
+            Assert.IsNotNull(NUnitUsingDirective.FirstOrDefault());
+        }
+
+        [TestMethod]
         public void SomeClassNamespaceTest()
         {
             IEnumerable<NamespaceDeclarationSyntax> Namespace =
                 from namespaceDeclaration in compilationUnitSyntax.DescendantNodes().OfType<NamespaceDeclarationSyntax>()
-                where namespaceDeclaration.Name.ToString() == "TestsGeneratorTestsClass.Tests"
+                where namespaceDeclaration.Name.ToString() == "ConsoleApp.Tests"
                 select namespaceDeclaration;
 
             Assert.IsNotNull(Namespace.FirstOrDefault());
@@ -55,7 +66,7 @@ namespace TestsGeneratorTest
                 from methodDeclaration in compilationUnitSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>()
                 select methodDeclaration;
 
-            Assert.IsTrue(methods.Count() == 3);
+            Assert.IsTrue(methods.Count() == 2);
         }
 
         [TestMethod]
@@ -63,7 +74,7 @@ namespace TestsGeneratorTest
         {
             IEnumerable<ClassDeclarationSyntax> className =
                 from classDeclaration in compilationUnitSyntax.DescendantNodes().OfType<ClassDeclarationSyntax>()
-                where classDeclaration.Identifier.ValueText == "SomeClassTests"
+                where classDeclaration.Identifier.ValueText == "SimpleClassTests"
                 select classDeclaration;
 
             Assert.IsNotNull(className.FirstOrDefault());
@@ -75,7 +86,7 @@ namespace TestsGeneratorTest
         {
             IEnumerable<MethodDeclarationSyntax> method =
                 from methodDeclaration in compilationUnitSyntax.DescendantNodes().OfType<MethodDeclarationSyntax>()
-                where methodDeclaration.Identifier.ValueText == "SecondMethodTest"
+                where methodDeclaration.Identifier.ValueText == "PublicMethodTest"
                 select methodDeclaration;
 
             IEnumerable<MemberAccessExpressionSyntax> asserts =

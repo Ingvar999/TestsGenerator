@@ -6,17 +6,20 @@ using System.Threading.Tasks;
 
 namespace ConsoleApp
 {
-    public class SimpleClass<T>
+    public class SimpleClass
     {	
-		public void VoidMethod(){
+		public void VoidMethod()
+		{
 			return;
 		}
 	
-		private int PivateMethod(){
+		private int PivateMethod()
+		{
 			return 1;
 		}
 		
-		public int PublicMethod(){
+		public int PublicMethod()
+		{
 			return 1;
 		}
     }
